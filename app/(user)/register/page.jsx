@@ -106,16 +106,11 @@ const Register = () => {
               />
             </div>
             <div>
-              {
-                !isLoading
-                  ? (
-                    <Button type="submit">Register</Button>
-                  )
-                  : (
-                    <LoadingBtn />
-                  )
-
-              }
+              {!isLoading ? (
+                <Button type="submit">Register</Button>
+              ) : (
+                <LoadingBtn />
+              )}
             </div>
             <p className="">
               Already have an account?{' '}

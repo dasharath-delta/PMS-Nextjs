@@ -1,20 +1,20 @@
-import { profiles } from "@/drizzle/schema";
-import { db } from "@/lib/db";
-import { apiResponse } from "@/util/response";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
-import { eq } from "drizzle-orm";
+import { profiles } from '@/drizzle/schema';
+import { db } from '@/lib/db';
+import { apiResponse } from '@/util/response';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../auth/[...nextauth]/route';
+import { eq } from 'drizzle-orm';
 
 export async function PUT(req) {
   try {
-    const session = await getServerSession(authOptions); 
-    
+    const session = await getServerSession(authOptions);
+
     if (!session?.user?.id) {
       return apiResponse({
         success: false,
-        message: "Unauthorized",
+        message: 'Unauthorized',
         status: 401,
-      }); 
+      });
     }
 
     const body = await req.json();
@@ -35,15 +35,15 @@ export async function PUT(req) {
 
     return apiResponse({
       success: true,
-      message: "Profile Updated",
+      message: 'Profile Updated',
       data: updatedProfile,
       status: 200,
     });
   } catch (error) {
-    console.error("Profile Update Error:", error);
+    console.error('Profile Update Error:', error);
     return apiResponse({
       success: false,
-      message: "Failed to update profile",
+      message: 'Failed to update profile',
       errors: error.message,
       status: 500,
     });

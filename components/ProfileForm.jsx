@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useUserStore } from "@/store/useUserStore";
-import { useState, useEffect } from "react";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Textarea } from "./ui/textarea";
-import { Button } from "./ui/button";
-import { toast } from "react-toastify";
+import { useUserStore } from '@/store/useUserStore';
+import { useState, useEffect } from 'react';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
+import { Button } from './ui/button';
+import { toast } from 'react-toastify';
 
 export default function ProfileForm({ session }) {
   const { profile, createProfile, updateProfile, error, isLoading, setIsEdit } =
@@ -14,23 +14,23 @@ export default function ProfileForm({ session }) {
 
   // Prefill form if profile exists
   const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
-    bio: "",
-    dob: "",
-    phone: "",
-    location: "",
+    firstname: '',
+    lastname: '',
+    bio: '',
+    dob: '',
+    phone: '',
+    location: '',
   });
 
   useEffect(() => {
     if (profile) {
       setFormData({
-        firstname: profile.firstname || "",
-        lastname: profile.lastname || "",
-        bio: profile.bio || "",
-        dob: profile.dob || "",
-        phone: profile.phone || "",
-        location: profile.location || "",
+        firstname: profile.firstname || '',
+        lastname: profile.lastname || '',
+        bio: profile.bio || '',
+        dob: profile.dob || '',
+        phone: profile.phone || '',
+        location: profile.location || '',
       });
     }
   }, [profile]);
@@ -49,15 +49,15 @@ export default function ProfileForm({ session }) {
       if (profile) {
         // Update existing profile
         await updateProfile(formData);
-         toast.success("Profile updated successfully!");
-        } else {
-          // Create new profile
-          await createProfile(formData);
-          toast.success("Profile careted successfully!");
+        toast.success('Profile updated successfully!');
+      } else {
+        // Create new profile
+        await createProfile(formData);
+        toast.success('Profile careted successfully!');
       }
       setIsEdit(false); // Close the form after saving
     } catch (err) {
-      console.error("Profile save error:", err);
+      console.error('Profile save error:', err);
     }
   }
 
@@ -65,7 +65,7 @@ export default function ProfileForm({ session }) {
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-gray-800 p-6 mt-10 w-full">
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-3xl">
         <h1 className="text-2xl font-bold mb-6 text-center">
-          {profile ? "Update Profile" : "Create Profile"}
+          {profile ? 'Update Profile' : 'Create Profile'}
         </h1>
 
         <form
@@ -149,7 +149,7 @@ export default function ProfileForm({ session }) {
               disabled={isLoading}
               className="flex-1 bg-blue-600 text-white hover:bg-blue-700"
             >
-              {isLoading ? "Saving..." : profile ? "Update" : "Create"}
+              {isLoading ? 'Saving...' : profile ? 'Update' : 'Create'}
             </Button>
 
             <Button

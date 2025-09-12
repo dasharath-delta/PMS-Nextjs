@@ -17,7 +17,7 @@ export const profiles = pgTable('profiles', {
   lastname: varchar('lastname', { length: 50 }),
   bio: varchar('bio', { length: 255 }).default(null),
   dob: date('dob').default(null),
-  phone: varchar('phone', { length: 15 }).default(null), 
+  phone: varchar('phone', { length: 15 }).default(null),
   location: varchar('location', { length: 100 }).default(null),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at')

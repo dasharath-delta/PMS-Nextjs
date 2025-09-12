@@ -26,14 +26,13 @@ const Login = () => {
       const result = await loginUser(email, password);
 
       if (!result) {
-        toast.error(error || "Invalid credentials");
+        toast.error(error || 'Invalid credentials');
         setEmail('');
         setPassword('');
       } else {
-        toast.success("Login successful");
-        router.push("/");
+        toast.success('Login successful');
+        router.push('/');
       }
-
     } catch (err) {
       toast.error(error);
     }
@@ -65,12 +64,13 @@ const Login = () => {
                 type={'password'}
               />
             </div>
-            <div>
+            <div className='flex items-center justify-between'>
               {!isLoading ? (
                 <Button type="submit">Login</Button>
               ) : (
                 <LoadingBtn />
               )}
+              <Link href={"/forgot-password"} className='text-red-400 hover:underline'>forgot-password</Link>
             </div>
             <p className="">
               Don't have an account?{' '}

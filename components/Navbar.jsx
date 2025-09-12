@@ -18,9 +18,7 @@ const Navbar = () => {
       </Link>
       <div className="capitalize font-medium text-gray-800 flex items-center gap-3">
         <NavLink href={'/'}>home</NavLink>
-        {session && (
-          <NavLink href={'/products'}>products</NavLink>
-        )}
+        {session && <NavLink href={'/products'}>products</NavLink>}
         <NavLink href={'/contact'}>contact</NavLink>
       </div>
       <div>

@@ -6,7 +6,7 @@ export async function middleware(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const path = req.nextUrl.pathname;
 
-  const isPublicPath = path === '/login' || path === '/register';
+  const isPublicPath = path === '/login' || path === '/register' || path === "/forgot-password" || path === '/reset-password';
 
   // if logged in, prevent accessing login/register again
   if (isPublicPath && token) {

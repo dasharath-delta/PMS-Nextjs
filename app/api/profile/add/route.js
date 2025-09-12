@@ -1,20 +1,19 @@
-import { profiles } from "@/drizzle/schema";
-import { db } from "@/lib/db";
-import { apiResponse } from "@/util/response";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
-
+import { profiles } from '@/drizzle/schema';
+import { db } from '@/lib/db';
+import { apiResponse } from '@/util/response';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../auth/[...nextauth]/route';
 
 export async function POST(req) {
   try {
-    const session = await getServerSession(authOptions); 
-    
+    const session = await getServerSession(authOptions);
+
     if (!session?.user?.id) {
       return apiResponse({
         success: false,
-        message: "Unauthorized",
+        message: 'Unauthorized',
         status: 400,
-      }); 
+      });
     }
 
     const body = await req.json();
@@ -35,15 +34,15 @@ export async function POST(req) {
 
     return apiResponse({
       success: true,
-      message: "Profile Updated",
+      message: 'Profile Updated',
       data: newProfile,
       status: 201,
     });
   } catch (error) {
-    console.error("Profile Error:", error);
+    console.error('Profile Error:', error);
     return apiResponse({
       success: false,
-      message: "Failed to create profile",
+      message: 'Failed to create profile',
       errors: error.message,
       status: 500,
     });

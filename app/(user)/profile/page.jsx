@@ -11,17 +11,25 @@ import { toast } from 'react-toastify';
 
 const Profile = () => {
   const { data: session, status } = useSession();
-  const { profile, fetchProfile, isEdit, setIsEdit, isLoading, updateUsername, user, fetchCurrentUser } = useUserStore();
+  const {
+    profile,
+    fetchProfile,
+    isEdit,
+    setIsEdit,
+    isLoading,
+    updateUsername,
+    user,
+    fetchCurrentUser,
+  } = useUserStore();
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [usernameInput, setUsernameInput] = useState(session?.user?.name || '');
-
 
   // Fetch profile when user logs in
   useEffect(() => {
     if (session?.user?.id) {
       fetchProfile();
       setUsernameInput(user?.name);
-      fetchCurrentUser()
+      fetchCurrentUser();
     }
   }, [session?.user?.id, fetchProfile, user?.name]);
 
@@ -60,7 +68,10 @@ const Profile = () => {
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 w-full text-gray-800 p-6">
       <div className="bg-white shadow-md rounded-xl p-8 w-full max-w-4xl">
         <h1 className="text-3xl font-bold mb-6 text-center">
-          My<span className="text-blue-500 border-l-2 ml-1.5 pl-1.5">Profile</span>
+          My
+          <span className="text-blue-500 border-l-2 ml-1.5 pl-1.5">
+            Profile
+          </span>
         </h1>
 
         {/* Basic Info */}
@@ -68,9 +79,15 @@ const Profile = () => {
           <div className="flex  flex-col ">
             <p className="text-sm text-gray-500">User Name</p>
             {!isEditingUsername ? (
-              <div className='flex items-center justify-between'>
-                <p className="text-lg font-medium">{user?.username || 'Not provided'}</p>
-                <Button size="sm" variant="outline" onClick={() => setIsEditingUsername(true)}>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-medium">
+                  {user?.username || 'Not provided'}
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setIsEditingUsername(true)}
+                >
                   Edit
                 </Button>
               </div>
@@ -85,7 +102,11 @@ const Profile = () => {
                 <Button size="sm" onClick={handleUsernameSave}>
                   Save
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => setIsEditingUsername(false)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setIsEditingUsername(false)}
+                >
                   Cancel
                 </Button>
               </div>
@@ -98,9 +119,22 @@ const Profile = () => {
           </div>
           <div>
             <p className="text-sm text-gray-500">Password</p>
-            <div className='flex items-center'>
-              <input disabled type='password' value={1234567890} onChange={() => { return }} className="text-lg font-medium" />
-              <Link href={"/updatePassword"} className='hover:underline font-semibold'>Update Pasaword</Link>
+            <div className="flex items-center">
+              <input
+                disabled
+                type="password"
+                value={1234567890}
+                onChange={() => {
+                  return;
+                }}
+                className="text-lg font-medium"
+              />
+              <Link
+                href={'/updatePassword'}
+                className="hover:underline font-semibold"
+              >
+                Update Pasaword
+              </Link>
             </div>
           </div>
 
@@ -109,7 +143,9 @@ const Profile = () => {
             <>
               <div>
                 <p className="text-sm text-gray-500">First Name</p>
-                <p className="text-lg font-medium">{profile.firstname || '—'}</p>
+                <p className="text-lg font-medium">
+                  {profile.firstname || '—'}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Last Name</p>
@@ -117,7 +153,9 @@ const Profile = () => {
               </div>
               <div className="md:col-span-2">
                 <p className="text-sm text-gray-500">Bio</p>
-                <p className="text-lg font-medium capitalize">{profile.bio || '—'}</p>
+                <p className="text-lg font-medium capitalize">
+                  {profile.bio || '—'}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">DOB</p>
@@ -129,7 +167,9 @@ const Profile = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Location</p>
-                <p className="text-lg font-medium capitalize">{profile.location || '—'}</p>
+                <p className="text-lg font-medium capitalize">
+                  {profile.location || '—'}
+                </p>
               </div>
             </>
           )}
@@ -138,7 +178,7 @@ const Profile = () => {
         {/* Buttons */}
         {!isEdit && (
           <Button onClick={() => setIsEdit(true)} className="mt-8 w-full">
-            {profile ? "Edit Profile" : "Set Profile"}
+            {profile ? 'Edit Profile' : 'Set Profile'}
           </Button>
         )}
       </div>
