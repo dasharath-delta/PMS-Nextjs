@@ -3,8 +3,10 @@
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
+
 export default function Home() {
   const { data: session } = useSession();
+  
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-gray-800 p-6">
       <h1 className="text-4xl font-bold mb-4">Welcome to Our App 👋</h1>

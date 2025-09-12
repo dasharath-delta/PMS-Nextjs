@@ -6,9 +6,9 @@ import bcrypt from 'bcryptjs';
 
 export async function POST(req) {
   try {
-    const { name, email, password } = await req.json();
+    const { username, email, password } = await req.json();
 
-    if (!name || !email || !password) {
+    if (!username || !email || !password) {
       return apiResponse({
         success: false,
         message: 'All fields are required.',
@@ -34,7 +34,7 @@ export async function POST(req) {
 
     const user = await db
       .insert(users)
-      .values({ name, email, password: hashedPassword })
+      .values({ username, email, password: hashedPassword })
       .returning();
 
     const { password: _, ...safeUser } = user[0];

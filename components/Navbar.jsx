@@ -5,6 +5,7 @@ import React from 'react';
 import { Button } from './ui/button';
 import { useUserStore } from '@/store/useUserStore';
 import LoadingBtn from './LoadingBtn';
+import NavLink from './NavLink';
 
 const Navbar = () => {
   const { logoutUser, isLoading, error } = useUserStore();
@@ -15,14 +16,13 @@ const Navbar = () => {
       <Link href={'/'} className="font-semibold text-2xl text-blue-500">
         PMS
       </Link>
-      {session && (
-        <div className="uppercase font-medium text-gray-800 flex items-center gap-3">
-          <Link href={'/'}>home</Link>
-          <Link href={'/products'}>products</Link>
-          <Link href={'/about'}>about</Link>
-          <Link href={'/contact'}>contact</Link>
-        </div>
-      )}
+      <div className="capitalize font-medium text-gray-800 flex items-center gap-3">
+        <NavLink href={'/'}>home</NavLink>
+        {session && (
+          <NavLink href={'/products'}>products</NavLink>
+        )}
+        <NavLink href={'/contact'}>contact</NavLink>
+      </div>
       <div>
         {!session ? (
           <div className="flex gap-2">

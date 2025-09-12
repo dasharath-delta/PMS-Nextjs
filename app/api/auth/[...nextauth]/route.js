@@ -46,7 +46,7 @@ export const authOptions = {
           return {
             id: user[0].id,
             email: user[0].email,
-            name: user[0].name,
+            name: user[0].username,
           };
         } catch (error) {
           console.log('Auth Error', error);

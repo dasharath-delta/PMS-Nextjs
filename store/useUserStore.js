@@ -2,19 +2,23 @@ import { create } from 'zustand';
 import axios from 'axios';
 import { signIn, signOut } from 'next-auth/react';
 
-export const useUserStore = create(set => ({
+export const useUserStore = create((set) => ({
   user: null,
+  profile: null, // <-- store profile separately
   isLoading: false,
   error: null,
+  isEdit: false,
 
-  registerUser: async userData => {
+  setIsEdit: (value) => set({ isEdit: value }),
+
+  registerUser: async (userData) => {
     set({ isLoading: true, error: null });
     try {
       const { data } = await axios.post('/api/auth/register', userData);
       if (!data.success) {
         throw new Error(data.message || 'Registration failed');
       }
-      set({ user: data.user, isLoading: false });
+      set({ user: data.data, isLoading: false });
       return data;
     } catch (err) {
       set({
@@ -28,7 +32,7 @@ export const useUserStore = create(set => ({
   loginUser: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
@@ -36,31 +40,142 @@ export const useUserStore = create(set => ({
 
       if (result?.error) {
         set({ error: result.error, isLoading: false });
-        return null;
+        return null; // return null on failure
       }
 
-      // fetch session user after login
-      const sessionRes = await axios.get('/api/auth/session');
-      set({ user: sessionRes.data?.user, isLoading: false });
-      return sessionRes.data?.user;
+      // Fetch user from API to sync store
+      const { data } = await axios.get("/api/auth/me");
+
+      set({ user: data.data, isLoading: false });
+      return data.data; // ✅ return user object
     } catch (err) {
       set({
-        error: err.response?.data?.message || 'Login failed',
+        error: err.response?.data?.message || "Login failed",
         isLoading: false,
       });
-      throw err;
+      return null;
     }
   },
+
 
   logoutUser: async () => {
     set({ isLoading: true });
     try {
       await signOut({ redirect: false });
-      set({ user: null, isLoading: false });
+      set({ user: null, profile: null, isLoading: false });
     } catch (err) {
       set({ error: 'Logout failed', isLoading: false });
     }
   },
 
-  setUser: user => set({ user }),
+  // ✅ Create new profile
+  createProfile: async (profileData) => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await axios.post('/api/profile/add', profileData);
+      if (!data.success) {
+        throw new Error(data.message || 'Profile creation failed');
+      }
+
+      set({ profile: data.data, isLoading: false });
+      return data.data;
+    } catch (err) {
+      set({ error: err.response?.data?.message || 'Profile creation failed', isLoading: false });
+      throw err;
+    }
+  },
+
+
+  fetchProfile: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await axios.get('/api/profile/me');
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to fetch profile');
+      }
+      set({ profile: data.data, isLoading: false });
+      return data.data;
+    } catch (err) {
+      set({ error: err.response?.data?.message || 'Failed to fetch profile', isLoading: false });
+      throw err;
+    }
+  },
+
+  updateProfile: async (profileData) => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await axios.put('/api/profile/update', profileData);
+      if (!data.success) {
+        throw new Error(data.message || 'Profile update failed');
+      }
+
+      set({ profile: data.data, isLoading: false, isEdit: false });
+      return data.data;
+    } catch (err) {
+      set({ error: err.response?.data?.message || 'Profile update failed', isLoading: false });
+      throw err;
+    }
+  },
+
+  updateUsername: async (username) => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await axios.put('/api/auth/username', { username });
+      if (!data.success) throw new Error(data.message || 'Failed to update username');
+
+      // Update user in store
+      set((state) => ({
+        user: { ...state.user, username }, // update name key to reflect NextAuth session
+        isLoading: false,
+      }));
+
+      return data.data;
+    } catch (err) {
+      set({ error: err.response?.data?.message || 'Failed to update username', isLoading: false });
+      throw err;
+    }
+  },
+
+  fetchCurrentUser: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await axios.get("/api/auth/me");
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to fetch user");
+      }
+      set({ user: data.data, isLoading: false });
+      return data.data;
+    } catch (err) {
+      set({
+        error: err.response?.data?.message || "Failed to fetch user",
+        isLoading: false,
+      });
+      set({ user: null });
+      throw err;
+    }
+  },
+
+  updateUserPassword: async (password, newPassword) => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await axios.put("/api/auth/update-password", { password, newPassword });
+      console.log(data);
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to updated password")
+      }
+      set({ isLoading: false })
+      return data.data;
+    } catch (err) {
+      set({
+        error: err.response?.data?.message || "Failed to fetch user",
+        isLoading: false,
+      });
+      set({ user: null });
+      throw err;
+    }
+  },
+
+  setUser: (user) => set({ user }),
 }));

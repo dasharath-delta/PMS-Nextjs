@@ -1,5 +1,6 @@
 'use client';
 import Loading from '@/components/Loading';
+import LoadingBtn from '@/components/LoadingBtn';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,7 +11,7 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
 const Register = () => {
-  const [name, setName] = useState('');
+  const [username, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,7 +20,7 @@ const Register = () => {
 
   const clearFields = () => {
     setEmail('');
-    setName('');
+    setUserName('');
     setPassword('');
     setConfirmPassword('');
   };
@@ -27,7 +28,7 @@ const Register = () => {
   const handleRegister = async e => {
     e.preventDefault();
 
-    if (!email || !password || !name || !confirmPassword) {
+    if (!email || !password || !username || !confirmPassword) {
       toast.error('Please fill all the fields');
       return;
     } else if (password !== confirmPassword) {
@@ -38,7 +39,7 @@ const Register = () => {
     try {
       const { data } = await axios.post(
         '/api/auth/register',
-        { name, email, password },
+        { username, email, password },
         { withCredentials: true }
       );
 
@@ -56,10 +57,6 @@ const Register = () => {
     }
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <>
       <div className="flex justify-center items-center h-screen">
@@ -72,12 +69,12 @@ const Register = () => {
             onSubmit={handleRegister}
           >
             <div className="flex flex-col gap-2">
-              <Label>Name</Label>
+              <Label>User Name</Label>
               <Input
-                value={name}
-                onChange={e => setName(e.target.value)}
+                value={username}
+                onChange={e => setUserName(e.target.value)}
                 className="capitalize"
-                placeholder="Enter Name"
+                placeholder="Ex. @example123"
                 type={'text'}
               />
             </div>
@@ -86,8 +83,7 @@ const Register = () => {
               <Input
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="lowercase"
-                placeholder="Enter Email"
+                placeholder="Ex. user12@example.com"
                 type={'text'}
               />
             </div>
@@ -110,7 +106,16 @@ const Register = () => {
               />
             </div>
             <div>
-              <Button type="submit">Register</Button>
+              {
+                !isLoading
+                  ? (
+                    <Button type="submit">Register</Button>
+                  )
+                  : (
+                    <LoadingBtn />
+                  )
+
+              }
             </div>
             <p className="">
               Already have an account?{' '}

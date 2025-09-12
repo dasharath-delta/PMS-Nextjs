@@ -25,16 +25,17 @@ const Login = () => {
     try {
       const result = await loginUser(email, password);
 
-      if (result === null) {
-        toast.error(error);
+      if (!result) {
+        toast.error(error || "Invalid credentials");
         setEmail('');
         setPassword('');
       } else {
-        toast.success('Login successful.');
-        router.push('/');
+        toast.success("Login successful");
+        router.push("/");
       }
-    } catch (error) {
-      toast.error('Failed to login');
+
+    } catch (err) {
+      toast.error(error);
     }
   };
 
