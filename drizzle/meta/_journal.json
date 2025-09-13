@@ -15,6 +15,13 @@
       "when": 1757684779393,
       "tag": "0001_damp_wallow",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757748315253,
+      "tag": "0002_mature_titanium_man",
+      "breakpoints": true
     }
   ]
 }

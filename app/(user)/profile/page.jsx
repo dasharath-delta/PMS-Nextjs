@@ -8,6 +8,9 @@ import Link from 'next/link';
 import ProfileForm from '@/components/ProfileForm';
 import { useUserStore } from '@/store/useUserStore';
 import { toast } from 'react-toastify';
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { User } from 'lucide-react';
+
 
 const Profile = () => {
   const { data: session, status } = useSession();
@@ -23,6 +26,7 @@ const Profile = () => {
   } = useUserStore();
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [usernameInput, setUsernameInput] = useState(session?.user?.name || '');
+
 
   // Fetch profile when user logs in
   useEffect(() => {
@@ -67,12 +71,25 @@ const Profile = () => {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 w-full text-gray-800 p-6">
       <div className="bg-white shadow-md rounded-xl p-8 w-full max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          My
-          <span className="text-blue-500 border-l-2 ml-1.5 pl-1.5">
-            Profile
-          </span>
-        </h1>
+        <div className='flex  justify-between items-center mb-4'>
+          <Avatar className="w-16 h-16">
+            <AvatarImage
+              src={profile?.avatar || <User />}
+              alt={profile?.username || "User Avatar"}
+              className="object-cover"
+            />
+            <AvatarFallback>
+              <User />
+            </AvatarFallback>
+          </Avatar>
+
+          <h1 className="text-3xl font-bold mb-6 text-center">
+            My
+            <span className="text-blue-500 border-l-2 ml-1.5 pl-1.5">
+              Profile
+            </span>
+          </h1>
+        </div>
 
         {/* Basic Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
@@ -119,7 +136,7 @@ const Profile = () => {
           </div>
           <div>
             <p className="text-sm text-gray-500">Password</p>
-            <div className="flex items-center">
+            <div className="flex items-center ">
               <input
                 disabled
                 type="password"
@@ -131,13 +148,13 @@ const Profile = () => {
               />
               <Link
                 href={'/updatePassword'}
-                className="hover:underline font-semibold"
+                className="underline hover:text-gray-500 font-semibold"
               >
                 Update Pasaword
               </Link>
             </div>
           </div>
-
+          <br />
           {/* Extra Info */}
           {profile && (
             <>

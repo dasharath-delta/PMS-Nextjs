@@ -6,9 +6,12 @@ import { Button } from './ui/button';
 import { useUserStore } from '@/store/useUserStore';
 import LoadingBtn from './LoadingBtn';
 import NavLink from './NavLink';
+import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { User } from 'lucide-react';
 
 const Navbar = () => {
-  const { logoutUser, isLoading, error } = useUserStore();
+  const { logoutUser, isLoading, profile } = useUserStore();
   const { data: session } = useSession();
 
   return (
@@ -38,15 +41,31 @@ const Navbar = () => {
             </Link>
           </div>
         ) : (
-          <div className="flex gap-2 items-center ">
-            <Link
-              href={'/profile'}
-              className="font-semibold border py-1.5 px-4 text-sm rounded hover:bg-black hover:text-white cursor-pointer duration-200"
-            >
-              Profile
+          <div className="flex gap-3 items-center ">
+
+            <Link href="/profile">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Avatar className="w-12 h-12 cursor-pointer">
+                      <AvatarImage
+                        src={profile?.avatar}
+                        alt={profile?.username || "User Avatar"}
+                        className="object-cover"
+                      />
+                      <AvatarFallback>
+                        <User />
+                      </AvatarFallback>
+                    </Avatar>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Profile</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </Link>
             {!isLoading ? (
-              <Button onClick={() => logoutUser()}>Logout</Button>
+              <Button onClick={() => logoutUser()} size="sm">Logout</Button>
             ) : (
               <LoadingBtn />
             )}

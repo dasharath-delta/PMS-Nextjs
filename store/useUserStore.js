@@ -229,6 +229,34 @@ export const useUserStore = create(set => ({
     }
   },
 
+  uploadAvatar: async (file) => {
+    set({ isLoading: true, error: null });
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const { data } = await axios.post("/api/profile/avatar", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (!data.success) {
+        throw new Error(data.message || "Avatar upload failed");
+      }
+
+      // update profile in state
+      set({ profile: data.data, isLoading: false });
+      return data.data;
+    } catch (err) {
+      set({
+        error: err.response?.data?.message || "Avatar upload failed",
+        isLoading: false,
+      });
+      throw err;
+    }
+  },
+
 
   setUser: user => set({ user }),
 }));

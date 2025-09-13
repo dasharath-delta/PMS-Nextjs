@@ -6,13 +6,23 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { toast } from 'react-toastify';
+import { User } from 'lucide-react';
 
 export default function ProfileForm({ session }) {
-  const { profile, createProfile, updateProfile, error, isLoading, setIsEdit } =
-    useUserStore();
+  const {
+    profile,
+    createProfile,
+    updateProfile,
+    uploadAvatar,
+    error,
+    isLoading,
+    setIsEdit,
+  } = useUserStore();
 
-  // Prefill form if profile exists
+  const today = new Date().toISOString().split("T")[0];
+
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -21,6 +31,8 @@ export default function ProfileForm({ session }) {
     phone: '',
     location: '',
   });
+
+  const [avatarFile, setAvatarFile] = useState(null);
 
   useEffect(() => {
     if (profile) {
@@ -44,25 +56,30 @@ export default function ProfileForm({ session }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     try {
       if (profile) {
-        // Update existing profile
         await updateProfile(formData);
         toast.success('Profile updated successfully!');
       } else {
-        // Create new profile
         await createProfile(formData);
-        toast.success('Profile careted successfully!');
+        toast.success('Profile created successfully!');
       }
-      setIsEdit(false); // Close the form after saving
+
+      // upload avatar if new file selected
+      if (avatarFile) {
+        await uploadAvatar(avatarFile);
+        toast.success("Avatar updated successfully!");
+      }
+
+      setIsEdit(false);
     } catch (err) {
       console.error('Profile save error:', err);
+      toast.error(err.message || "Failed to save profile");
     }
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-gray-800 p-6 mt-10 w-full">
+    <main className="flex flex-col items-center justify-center bg-gray-50 text-gray-800 p-6 w-full">
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-3xl">
         <h1 className="text-2xl font-bold mb-6 text-center">
           {profile ? 'Update Profile' : 'Create Profile'}
@@ -72,6 +89,31 @@ export default function ProfileForm({ session }) {
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
+          {/* Avatar Upload */}
+          <div className="md:col-span-2 flex flex-col items-center gap-4">
+            <Avatar className="w-20 h-20">
+              <AvatarImage
+               src={
+                avatarFile
+                  ? URL.createObjectURL(avatarFile) // show preview
+                  : profile?.avatar || <User/>
+              }
+                alt={profile?.username || 'User Avatar'}
+                className="object-cover"
+              />
+              <AvatarFallback>
+                <User />
+              </AvatarFallback>
+            </Avatar>
+
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setAvatarFile(e.target.files[0])}
+              className="cursor-pointer"
+            />
+          </div>
+
           {/* Firstname */}
           <div>
             <Label>First Name</Label>
@@ -96,7 +138,7 @@ export default function ProfileForm({ session }) {
             />
           </div>
 
-          {/* Bio - full width */}
+          {/* Bio */}
           <div className="md:col-span-2">
             <Label>Bio</Label>
             <Textarea
@@ -115,6 +157,8 @@ export default function ProfileForm({ session }) {
               name="dob"
               value={formData.dob}
               onChange={handleChange}
+              max={today}
+              min={"1900-01-01"}
             />
           </div>
 
@@ -130,7 +174,7 @@ export default function ProfileForm({ session }) {
             />
           </div>
 
-          {/* Location - full width */}
+          {/* Location */}
           <div className="md:col-span-2">
             <Label>Location</Label>
             <Input
@@ -142,7 +186,7 @@ export default function ProfileForm({ session }) {
             />
           </div>
 
-          {/* Buttons - full width */}
+          {/* Buttons */}
           <div className="md:col-span-2 flex gap-4 mt-2">
             <Button
               type="submit"
