@@ -1,10 +1,30 @@
 'use client';
 
+import { useUserStore } from '@/store/useUserStore';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const { data: session } = useSession();
+  const { fetchProfile } = useUserStore();
+  const router = useRouter();
+
+  // Fetch profile when user logs in
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchProfile();
+    }
+
+    // Redirect admin to dashboard
+    if (session?.user?.role === 'admin') {
+      router.push('/dashboard');
+    }
+  }, [session?.user?.id, session?.user?.role, fetchProfile, router]);
+
+  // Don't show Home content to admin
+  if (session?.user?.role === 'admin') return null;
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-gray-800 p-6">

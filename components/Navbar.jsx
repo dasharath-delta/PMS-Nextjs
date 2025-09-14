@@ -14,16 +14,41 @@ const Navbar = () => {
   const { logoutUser, isLoading, profile } = useUserStore();
   const { data: session } = useSession();
 
+  const role = session?.user?.role; // 👈 get role from session
+
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-secondary bg-white relative transition-all shadow-md">
-      <Link href={'/'} className="font-semibold text-2xl text-blue-500">
-        PMS
-      </Link>
+      {/* Logo */}
+      {
+        role === "admin"
+          ? <Link href={'/dashboard'} className="font-semibold text-2xl text-blue-500">
+            PMS  <span className="text-black border-l-2 ml-1.5 pl-1.5">
+              Admin
+            </span>
+          </Link>
+          : <Link href={'/'} className="font-semibold text-2xl text-blue-500">
+            PMS
+          </Link>
+
+      }
+      {/* Links */}
       <div className="capitalize font-medium text-gray-800 flex items-center gap-3">
-        <NavLink href={'/'}>home</NavLink>
-        {session && <NavLink href={'/products'}>products</NavLink>}
-        <NavLink href={'/contact'}>contact</NavLink>
+        {role === "admin" ? (
+          <>
+            <NavLink href={'/dashboard'}>dashboard</NavLink>
+            <NavLink href={'/users'}>users</NavLink>
+            <NavLink href={'/reports'}>reports</NavLink>
+          </>
+        ) : (
+          <>
+            <NavLink href={'/'}>home</NavLink>
+            {session && <NavLink href={'/products'}>products</NavLink>}
+            <NavLink href={'/contact'}>contact</NavLink>
+          </>
+        )}
       </div>
+
+      {/* Auth buttons / Profile */}
       <div>
         {!session ? (
           <div className="flex gap-2">
@@ -41,8 +66,8 @@ const Navbar = () => {
             </Link>
           </div>
         ) : (
-          <div className="flex gap-3 items-center ">
-
+          <div className="flex gap-3 items-center">
+            {/* Avatar with tooltip */}
             <Link href="/profile">
               <TooltipProvider>
                 <Tooltip>
@@ -64,8 +89,12 @@ const Navbar = () => {
                 </Tooltip>
               </TooltipProvider>
             </Link>
+
+            {/* Logout */}
             {!isLoading ? (
-              <Button onClick={() => logoutUser()} size="sm">Logout</Button>
+              <Button onClick={() => logoutUser()} size="sm">
+                Logout
+              </Button>
             ) : (
               <LoadingBtn />
             )}

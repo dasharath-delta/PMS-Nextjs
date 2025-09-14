@@ -55,28 +55,41 @@ export default function ProfileForm({ session }) {
   }
 
   async function handleSubmit(e) {
-    e.preventDefault();
-    try {
+  e.preventDefault();
+  try {
+    let hasProfileFields =
+      formData.firstname ||
+      formData.lastname ||
+      formData.bio ||
+      formData.dob ||
+      formData.phone ||
+      formData.location;
+
+    // 1️⃣ Update/create profile if fields exist
+    if (hasProfileFields) {
       if (profile) {
         await updateProfile(formData);
-        toast.success('Profile updated successfully!');
+        toast.success("Profile updated successfully!");
       } else {
         await createProfile(formData);
-        toast.success('Profile created successfully!');
+        toast.success("Profile created successfully!");
       }
-
-      // upload avatar if new file selected
-      if (avatarFile) {
-        await uploadAvatar(avatarFile);
-        toast.success("Avatar updated successfully!");
-      }
-
-      setIsEdit(false);
-    } catch (err) {
-      console.error('Profile save error:', err);
-      toast.error(err.message || "Failed to save profile");
     }
+
+    // 2️⃣ Upload avatar if a new file was selected
+    if (avatarFile) {
+      await uploadAvatar(avatarFile);
+      toast.success("Avatar updated successfully!");
+    }
+
+    // 3️⃣ Reset edit mode
+    setIsEdit(false);
+  } catch (err) {
+    console.error("Profile save error:", err);
+    toast.error(err.message || "Failed to save profile");
   }
+}
+
 
   return (
     <main className="flex flex-col items-center justify-center bg-gray-50 text-gray-800 p-6 w-full">

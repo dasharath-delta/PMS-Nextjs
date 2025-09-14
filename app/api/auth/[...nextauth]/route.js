@@ -11,72 +11,73 @@ export const authOptions = {
       id: 'credentials',
       name: 'credentials',
       credentials: {
-        email: {
-          type: 'text',
-          label: 'Email',
-        },
-        password: {
-          type: 'text',
-          label: 'Password',
-        },
+        email: { type: 'text', label: 'Email' },
+        password: { type: 'password', label: 'Password' },
+        role: { type: 'text', label: 'Role' }, // 👈 added role
       },
       async authorize(credentials) {
-        if (!credentials.email || !credentials.password) {
-          throw new Error('Missing email or password');
+        
+        if (!credentials.email || !credentials.password || !credentials.role) {
+          throw new Error('Missing email, password or role');
         }
-        try {
-          const user = await db
-            .select()
-            .from(users)
-            .where(eq(users.email, credentials.email));
 
-          if (user.length === 0) {
-            throw new Error('User not found');
-          }
+        // find user by email
+        const [user] = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, credentials.email));
 
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password,
-            user[0].password
-          );
+        if (!user) throw new Error('User not found');
 
-          if (!isPasswordValid) {
-            throw new Error('Incorrect password');
-          }
+        // check password
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+        if (!isPasswordValid) throw new Error('Incorrect password');
 
-          return {
-            id: user[0].id,
-            email: user[0].email,
-            name: user[0].username,
-          };
-        } catch (error) {
-          console.log('Auth Error', error);
-          throw new Error('Invalid Credentials');
+        // check role
+        if (user.role !== credentials.role) {
+          throw new Error('Invalid role selected'); // 👈 prevents fake admin login
         }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.username,
+          role: user.role,
+        };
       },
     }),
   ],
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id.toString();
+        session.user.role = token.role;
       }
       return session;
     },
   },
+
   pages: {
     signIn: '/login',
     error: '/login',
   },
+
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60,
   },
+
   secret: process.env.NEXTAUTH_SECRET,
 };
 

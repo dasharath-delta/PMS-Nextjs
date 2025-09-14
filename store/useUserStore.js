@@ -3,6 +3,7 @@ import axios from 'axios';
 import { signIn, signOut } from 'next-auth/react';
 
 export const useUserStore = create(set => ({
+
   user: null,
   profile: null, // <-- store profile separately
   isLoading: false,
@@ -29,25 +30,33 @@ export const useUserStore = create(set => ({
     }
   },
 
-  loginUser: async (email, password) => {
+  loginUser: async (email, password, role) => {
     set({ isLoading: true, error: null });
     try {
+      // call NextAuth signIn with role
       const result = await signIn('credentials', {
         redirect: false,
         email,
         password,
+        role, // 👈 include role
       });
 
       if (result?.error) {
         set({ error: result.error, isLoading: false });
-        return null; // return null on failure
+        return null; // login failed
       }
 
-      // Fetch user from API to sync store
+      // Fetch user session/me API to sync store
       const { data } = await axios.get('/api/auth/me');
 
+      // check if role from backend matches selected role
+      if (data?.data?.role !== role) {
+        set({ error: 'Invalid role selected', isLoading: false });
+        return null;
+      }
+
       set({ user: data.data, isLoading: false });
-      return data.data; // ✅ return user object
+      return data.data; // return user object
     } catch (err) {
       set({
         error: err.response?.data?.message || 'Login failed',
@@ -56,6 +65,7 @@ export const useUserStore = create(set => ({
       return null;
     }
   },
+
 
   logoutUser: async () => {
     set({ isLoading: true });
@@ -94,8 +104,8 @@ export const useUserStore = create(set => ({
       if (!data.success) {
         throw new Error(data.message || 'Failed to fetch profile');
       }
-      set({ profile: data.data, isLoading: false });
-      return data.data;
+      set({ profile: data?.data, isLoading: false });
+      return data?.data;
     } catch (err) {
       set({
         error: err.response?.data?.message || 'Failed to fetch profile',

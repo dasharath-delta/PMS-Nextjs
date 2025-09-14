@@ -28,14 +28,20 @@ const Profile = () => {
   const [usernameInput, setUsernameInput] = useState(session?.user?.name || '');
 
 
+
   // Fetch profile when user logs in
   useEffect(() => {
     if (session?.user?.id) {
       fetchProfile();
-      setUsernameInput(user?.name);
       fetchCurrentUser();
     }
-  }, [session?.user?.id, fetchProfile, user?.name]);
+  }, [session?.user?.id, fetchProfile, fetchCurrentUser]);
+
+  useEffect(() => {
+    if (user?.username) {
+      setUsernameInput(user.username);
+    }
+  }, [user?.username]);
 
   const handleUsernameSave = async () => {
     if (!usernameInput) {
@@ -140,11 +146,9 @@ const Profile = () => {
               <input
                 disabled
                 type="password"
-                value={1234567890}
-                onChange={() => {
-                  return;
-                }}
+                value={"*********"}
                 className="text-lg font-medium"
+                readOnly
               />
               <Link
                 href={'/updatePassword'}

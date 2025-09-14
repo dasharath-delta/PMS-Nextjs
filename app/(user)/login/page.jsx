@@ -1,90 +1,134 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-import LoadingBtn from '@/components/LoadingBtn';
-import { useUserStore } from '@/store/useUserStore';
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import LoadingBtn from "@/components/LoadingBtn";
+import { useUserStore } from "@/store/useUserStore";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("user");
+  const [password, setPassword] = useState("");
   const router = useRouter();
   const { loginUser, isLoading, error } = useUserStore();
 
-  const handleLogin = async e => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      toast.error('Please fill fields');
+    if (!email || !password || !role) {
+      toast.error("Please fill in all fields");
       return;
     }
 
     try {
-      const result = await loginUser(email, password);
+      const user = await loginUser(email, password, role);
 
-      if (!result) {
-        toast.error(error || 'Invalid credentials');
-        setEmail('');
-        setPassword('');
+      if (!user) {
+        toast.error(error || "Invalid credentials");
+        setEmail("");
+        setPassword("");
       } else {
-        toast.success('Login successful');
-        router.push('/');
+        toast.success("Login successful ✅");
+
+        // 👇 Redirect based on role
+        if (user.role === "admin") {
+          router.push("/dashboard");
+        } else {
+          router.push("/");
+        }
       }
-    } catch (err) {
-      toast.error(error);
+    } catch {
+      toast.error(error || "Something went wrong");
     }
   };
 
   return (
-    <>
-      <div className="flex justify-center items-center h-screen ">
-        <div className="shadow-md border w-2xs gap-3 border-gray-600 rounded p-4 flex flex-col items-center bg-white">
-          <h1 className="font-semibold  text-black ">
-            User | <span className="text-blue-500">Login</span>
-          </h1>
-          <form className="flex flex-col w-full gap-3" onSubmit={handleLogin}>
+    <div className="flex justify-center items-center h-screen bg-gray-50">
+      <Card className="w-[350px] shadow-md">
+        <CardHeader>
+          <CardTitle className="text-center">
+            User <span className="text-blue-500">Login</span>
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <Label>Email</Label>
               <Input
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
-                type={'text'}
+                type="email"
               />
             </div>
+
+            <div className="flex flex-col gap-2">
+              <Label>Role</Label>
+              <Select value={role} onValueChange={setRole}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="flex flex-col gap-2">
               <Label>Password</Label>
               <Input
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter Password"
-                type={'password'}
+                type="password"
               />
             </div>
-            <div className='flex items-center justify-between'>
+
+            <div className="flex items-center justify-between">
               {!isLoading ? (
-                <Button type="submit">Login</Button>
+                <Button type="submit" className="w-[120px]">
+                  Login
+                </Button>
               ) : (
                 <LoadingBtn />
               )}
-              <Link href={"/forgot-password"} className='text-red-400 hover:underline'>forgot-password</Link>
-            </div>
-            <p className="">
-              Don't have an account?{' '}
               <Link
-                href={'/register'}
-                className="hover:underline text-blue-500"
+                href="/forgot-password"
+                className="text-sm text-red-400 hover:underline"
               >
-                Register
+                Forgot password?
               </Link>
-            </p>
+            </div>
           </form>
-        </div>
-      </div>
-    </>
+        </CardContent>
+
+        <CardFooter className="text-sm text-center flex justify-center">
+          Don&apos;t have an account?{" "}
+          <Link href="/register" className="ml-1 text-blue-500 hover:underline">
+            Register
+          </Link>
+        </CardFooter>
+      </Card>
+    </div>
   );
 };
 
