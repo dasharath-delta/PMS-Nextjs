@@ -3,14 +3,16 @@
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUserStore } from '@/store/useUserStore';
 
 export default function Dashboard() {
   const { data: session } = useSession();
   const router = useRouter();
-
+  const {fetchProfile} = useUserStore()
   // Redirect non-admins away from dashboard
   useEffect(() => {
     if (session && session.user.role !== 'admin') {
+      fetchProfile();
       router.push('/');
     }
   }, [session, router]);

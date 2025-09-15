@@ -10,6 +10,8 @@ import { useUserStore } from '@/store/useUserStore';
 import { toast } from 'react-toastify';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { User } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 const Profile = () => {
   const { data: session, status } = useSession();
@@ -23,9 +25,9 @@ const Profile = () => {
     user,
     fetchCurrentUser,
   } = useUserStore();
+
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [usernameInput, setUsernameInput] = useState(session?.user?.name || '');
-  console.log('current user', user);
 
   // Fetch profile when user logs in
   useEffect(() => {
@@ -42,13 +44,13 @@ const Profile = () => {
   }, [user?.username]);
 
   const handleUsernameSave = async () => {
-    if (!usernameInput) {
+    if (!usernameInput.trim()) {
       toast.error('Username cannot be empty');
       return;
     }
 
     try {
-      await updateUsername(usernameInput); // call store function
+      await updateUsername(usernameInput);
       toast.success('Username updated successfully!');
       setIsEditingUsername(false);
     } catch (err) {
@@ -62,7 +64,7 @@ const Profile = () => {
 
   if (!session) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-6">
         <h1 className="text-2xl font-semibold">Not logged in</h1>
         <p className="text-gray-600">Please log in to view your profile.</p>
         <Button asChild>
@@ -73,98 +75,83 @@ const Profile = () => {
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 w-full text-gray-800 p-6">
-      <div className="bg-white shadow-md rounded-xl p-8 w-full max-w-4xl">
-        <div className="flex  justify-between items-center mb-4">
-          <Avatar className="w-16 h-16">
-            <AvatarImage
-              src={profile?.avatar || <User />}
-              alt={profile?.username || 'User Avatar'}
-              className="object-cover"
-            />
-            <AvatarFallback>
-              <User />
-            </AvatarFallback>
+    <main className="min-h-screen flex flex-col items-center bg-gray-50 w-full text-gray-800 p-6">
+      <Card className="w-full max-w-4xl shadow-lg rounded-xl">
+        <CardHeader className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <Avatar className="w-20 h-20">
+            {profile?.avatar ? (
+              <AvatarImage src={profile.avatar}  alt={profile?.username || 'User'} />
+            ) : (
+              <AvatarFallback>
+                <User />
+              </AvatarFallback>
+            )}
           </Avatar>
-
-          <h1 className="text-3xl font-bold mb-6 text-center">
+          <h1 className="text-3xl font-bold text-center md:text-left">
             My
             <span className="text-blue-500 border-l-2 ml-1.5 pl-1.5">
               Profile
             </span>
           </h1>
-        </div>
+        </CardHeader>
 
-        {/* Basic Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-          <div className="flex  flex-col ">
+        <CardContent className="space-y-6">
+          {/* Username */}
+          <div>
             <p className="text-sm text-gray-500">User Name</p>
             {!isEditingUsername ? (
               <div className="flex items-center justify-between">
                 <p className="text-lg font-medium">
                   {user?.username || 'Not provided'}
                 </p>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setIsEditingUsername(true)}
-                >
+                <Button size="sm" variant="outline" onClick={() => setIsEditingUsername(true)}>
                   Edit
                 </Button>
               </div>
             ) : (
-              <div className="flex gap-2 items-center ">
-                <input
+              <div className="flex gap-2 items-center">
+                <Input
                   type="text"
                   value={usernameInput}
                   onChange={e => setUsernameInput(e.target.value)}
-                  className="border rounded px-2 py-1 text-lg"
+                  className="text-lg"
                 />
                 <Button size="sm" onClick={handleUsernameSave}>
                   Save
                 </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setIsEditingUsername(false)}
-                >
+                <Button size="sm" variant="outline" onClick={() => setIsEditingUsername(false)}>
                   Cancel
                 </Button>
               </div>
             )}
           </div>
 
+          {/* Email */}
           <div>
             <p className="text-sm text-gray-500">Email</p>
             <p className="text-lg font-medium">{session.user?.email}</p>
           </div>
+
+          {/* Password */}
           <div>
             <p className="text-sm text-gray-500">Password</p>
-            <div className="flex items-center ">
-              <input
-                disabled
-                type="password"
-                value={'*********'}
-                className="text-lg font-medium"
-                readOnly
-              />
+            <div className="flex items-center gap-2">
+              <Input disabled type="password" value="*********" className="w-40" />
               <Link
-                href={'/updatePassword'}
-                className="underline hover:text-gray-500 font-semibold"
+                href="/updatePassword"
+                className="underline hover:text-gray-500 font-semibold text-sm"
               >
-                Update Pasaword
+                Update Password
               </Link>
             </div>
           </div>
-          <br />
+
           {/* Extra Info */}
           {profile && (
-            <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-sm text-gray-500">First Name</p>
-                <p className="text-lg font-medium">
-                  {profile.firstname || '—'}
-                </p>
+                <p className="text-lg font-medium">{profile.firstname || '—'}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Last Name</p>
@@ -172,9 +159,7 @@ const Profile = () => {
               </div>
               <div className="md:col-span-2">
                 <p className="text-sm text-gray-500">Bio</p>
-                <p className="text-lg font-medium capitalize">
-                  {profile.bio || '—'}
-                </p>
+                <p className="text-lg font-medium">{profile.bio || '—'}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">DOB</p>
@@ -186,21 +171,19 @@ const Profile = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Location</p>
-                <p className="text-lg font-medium capitalize">
-                  {profile.location || '—'}
-                </p>
+                <p className="text-lg font-medium">{profile.location || '—'}</p>
               </div>
-            </>
+            </div>
           )}
-        </div>
 
-        {/* Buttons */}
-        {!isEdit && (
-          <Button onClick={() => setIsEdit(true)} className="mt-8 w-full">
-            {profile ? 'Edit Profile' : 'Set Profile'}
-          </Button>
-        )}
-      </div>
+          {/* Buttons */}
+          {!isEdit && (
+            <Button onClick={() => setIsEdit(true)} className="mt-4 w-full">
+              {profile ? 'Edit Profile' : 'Set Profile'}
+            </Button>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Edit Mode */}
       {isEdit && (
