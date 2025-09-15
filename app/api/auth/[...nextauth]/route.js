@@ -16,7 +16,6 @@ export const authOptions = {
         role: { type: 'text', label: 'Role' }, // 👈 added role
       },
       async authorize(credentials) {
-        
         if (!credentials.email || !credentials.password || !credentials.role) {
           throw new Error('Missing email, password or role');
         }

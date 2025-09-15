@@ -3,12 +3,12 @@ import axios from 'axios';
 import { signIn, signOut } from 'next-auth/react';
 
 export const useUserStore = create(set => ({
-
   user: null,
   profile: null, // <-- store profile separately
   isLoading: false,
   error: null,
   isEdit: false,
+  allUsers: [],
 
   setIsEdit: value => set({ isEdit: value }),
 
@@ -66,14 +66,13 @@ export const useUserStore = create(set => ({
     }
   },
 
-
   logoutUser: async () => {
     set({ isLoading: true });
     try {
-      await signOut({ redirect: false });
-      set({ user: null, profile: null, isLoading: false });
+      await signOut({ callbackUrl: '/login' }); // 👈 destroys session + redirect
+      set({ profile: null, isLoading: false });
     } catch (err) {
-      set({ error: 'Logout failed', isLoading: false });
+      set({ isLoading: false, error: 'Logout failed' });
     }
   },
 
@@ -109,6 +108,24 @@ export const useUserStore = create(set => ({
     } catch (err) {
       set({
         error: err.response?.data?.message || 'Failed to fetch profile',
+        isLoading: false,
+      });
+      throw err;
+    }
+  },
+
+  fetchAllUsers: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const { data } = await axios.get('/api/auth/allusers');
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to fetch users');
+      }
+      set({ allUsers: data?.data, isLoading: false });
+      return data?.data;
+    } catch (err) {
+      set({
+        error: err.response?.data?.message || 'Failed to fetch users',
         isLoading: false,
       });
       throw err;
@@ -200,18 +217,18 @@ export const useUserStore = create(set => ({
       throw err;
     }
   },
-  forgotPassword: async (email) => {
+  forgotPassword: async email => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await axios.post("/api/auth/forgot-password", { email });
+      const { data } = await axios.post('/api/auth/forgot-password', { email });
       if (!data.success) {
-        throw new Error(data.message || "Failed to send reset link");
+        throw new Error(data.message || 'Failed to send reset link');
       }
       set({ isLoading: false });
       return data.message;
     } catch (err) {
       set({
-        error: err.response?.data?.message || "Failed to send reset link",
+        error: err.response?.data?.message || 'Failed to send reset link',
         isLoading: false,
       });
       throw err;
@@ -221,38 +238,38 @@ export const useUserStore = create(set => ({
   resetPassword: async (token, newPassword) => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await axios.post("/api/auth/reset-password", {
+      const { data } = await axios.post('/api/auth/reset-password', {
         token,
         newPassword,
       });
       if (!data.success) {
-        throw new Error(data.message || "Failed to reset password");
+        throw new Error(data.message || 'Failed to reset password');
       }
       set({ isLoading: false });
       return data.message;
     } catch (err) {
       set({
-        error: err.response?.data?.message || "Failed to reset password",
+        error: err.response?.data?.message || 'Failed to reset password',
         isLoading: false,
       });
       throw err;
     }
   },
 
-  uploadAvatar: async (file) => {
+  uploadAvatar: async file => {
     set({ isLoading: true, error: null });
     try {
       const formData = new FormData();
-      formData.append("avatar", file);
+      formData.append('avatar', file);
 
-      const { data } = await axios.post("/api/profile/avatar", formData, {
+      const { data } = await axios.post('/api/profile/avatar', formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       });
 
       if (!data.success) {
-        throw new Error(data.message || "Avatar upload failed");
+        throw new Error(data.message || 'Avatar upload failed');
       }
 
       // update profile in state
@@ -260,13 +277,12 @@ export const useUserStore = create(set => ({
       return data.data;
     } catch (err) {
       set({
-        error: err.response?.data?.message || "Avatar upload failed",
+        error: err.response?.data?.message || 'Avatar upload failed',
         isLoading: false,
       });
       throw err;
     }
   },
-
 
   setUser: user => set({ user }),
 }));

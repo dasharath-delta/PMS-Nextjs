@@ -3,6 +3,7 @@ import { profiles } from '@/drizzle/schema';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { eq } from 'drizzle-orm';
+import { apiResponse } from '@/util/response';
 
 export async function GET() {
   try {
@@ -19,16 +20,19 @@ export async function GET() {
       .select()
       .from(profiles)
       .where(eq(profiles.userId, Number(session.user.id)));
-
-    return Response.json({
+    return apiResponse({
       success: true,
+      message: 'Profile data fetched',
       data: profile.length > 0 ? profile[0] : null,
+      status: 200,
     });
   } catch (error) {
     console.error('Profile fetch error:', error);
-    return Response.json(
-      { success: false, message: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return apiResponse({
+      success: false,
+      message: 'Internal Server Error',
+      status: 500,
+      errors: error.message,
+    });
   }
 }

@@ -1,10 +1,10 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
-import { uploadBufferToCloudinary } from "@/lib/cloudinary";
-import { db } from "@/lib/db";
-import { profiles } from "@/drizzle/schema";
-import { eq } from "drizzle-orm";
-import { apiResponse } from "@/util/response";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../auth/[...nextauth]/route';
+import { uploadBufferToCloudinary } from '@/lib/cloudinary';
+import { db } from '@/lib/db';
+import { profiles } from '@/drizzle/schema';
+import { eq } from 'drizzle-orm';
+import { apiResponse } from '@/util/response';
 
 export async function POST(req) {
   try {
@@ -13,18 +13,18 @@ export async function POST(req) {
     if (!session?.user?.id) {
       return apiResponse({
         success: false,
-        message: "Unauthorized",
+        message: 'Unauthorized',
         status: 401,
       });
     }
 
     const formData = await req.formData();
-    const avatarFile = formData.get("avatar");
+    const avatarFile = formData.get('avatar');
 
     if (!avatarFile) {
       return apiResponse({
         success: false,
-        message: "No file uploaded",
+        message: 'No file uploaded',
         status: 400,
       });
     }
@@ -34,7 +34,7 @@ export async function POST(req) {
 
     const cloudinaryResponse = await uploadBufferToCloudinary(
       buffer,
-      "avatars"
+      'avatars'
     );
 
     // Try update first
@@ -60,15 +60,15 @@ export async function POST(req) {
 
     return apiResponse({
       success: true,
-      message: "Avatar uploaded successfully",
+      message: 'Avatar uploaded successfully',
       data: finalProfile,
       status: 201,
     });
   } catch (err) {
-    console.error("Avatar Upload Error:", err);
+    console.error('Avatar Upload Error:', err);
     return apiResponse({
       success: false,
-      message: "Failed to upload avatar",
+      message: 'Failed to upload avatar',
       errors: err.message,
       status: 500,
     });

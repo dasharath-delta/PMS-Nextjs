@@ -1,39 +1,39 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { toast } from "react-toastify";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { toast } from 'react-toastify';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
   CardFooter,
-} from "@/components/ui/card";
-import LoadingBtn from "@/components/LoadingBtn";
-import { useUserStore } from "@/store/useUserStore";
+} from '@/components/ui/card';
+import LoadingBtn from '@/components/LoadingBtn';
+import { useUserStore } from '@/store/useUserStore';
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("user");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState('user');
+  const [password, setPassword] = useState('');
   const router = useRouter();
   const { loginUser, isLoading, error } = useUserStore();
 
-  const handleLogin = async (e) => {
+  const handleLogin = async e => {
     e.preventDefault();
     if (!email || !password || !role) {
-      toast.error("Please fill in all fields");
+      toast.error('Please fill in all fields');
       return;
     }
 
@@ -41,21 +41,21 @@ const Login = () => {
       const user = await loginUser(email, password, role);
 
       if (!user) {
-        toast.error(error || "Invalid credentials");
-        setEmail("");
-        setPassword("");
+        toast.error(error || 'Invalid credentials');
+        setEmail('');
+        setPassword('');
       } else {
-        toast.success("Login successful ✅");
+        toast.success('Login successful ✅');
 
         // 👇 Redirect based on role
-        if (user.role === "admin") {
-          router.push("/dashboard");
+        if (user.role === 'admin') {
+          router.push('/dashboard');
         } else {
-          router.push("/");
+          router.push('/');
         }
       }
     } catch {
-      toast.error(error || "Something went wrong");
+      toast.error(error || 'Something went wrong');
     }
   };
 
@@ -74,7 +74,7 @@ const Login = () => {
               <Label>Email</Label>
               <Input
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 placeholder="Enter Email"
                 type="email"
               />
@@ -97,7 +97,7 @@ const Login = () => {
               <Label>Password</Label>
               <Input
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 placeholder="Enter Password"
                 type="password"
               />
@@ -122,7 +122,7 @@ const Login = () => {
         </CardContent>
 
         <CardFooter className="text-sm text-center flex justify-center">
-          Don&apos;t have an account?{" "}
+          Don&apos;t have an account?{' '}
           <Link href="/register" className="ml-1 text-blue-500 hover:underline">
             Register
           </Link>

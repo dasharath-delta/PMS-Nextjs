@@ -21,7 +21,7 @@ export default function ProfileForm({ session }) {
     setIsEdit,
   } = useUserStore();
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const [formData, setFormData] = useState({
     firstname: '',
@@ -55,41 +55,40 @@ export default function ProfileForm({ session }) {
   }
 
   async function handleSubmit(e) {
-  e.preventDefault();
-  try {
-    let hasProfileFields =
-      formData.firstname ||
-      formData.lastname ||
-      formData.bio ||
-      formData.dob ||
-      formData.phone ||
-      formData.location;
+    e.preventDefault();
+    try {
+      let hasProfileFields =
+        formData.firstname ||
+        formData.lastname ||
+        formData.bio ||
+        formData.dob ||
+        formData.phone ||
+        formData.location;
 
-    // 1️⃣ Update/create profile if fields exist
-    if (hasProfileFields) {
-      if (profile) {
-        await updateProfile(formData);
-        toast.success("Profile updated successfully!");
-      } else {
-        await createProfile(formData);
-        toast.success("Profile created successfully!");
+      // 1️⃣ Update/create profile if fields exist
+      if (hasProfileFields) {
+        if (profile) {
+          await updateProfile(formData);
+          toast.success('Profile updated successfully!');
+        } else {
+          await createProfile(formData);
+          toast.success('Profile created successfully!');
+        }
       }
-    }
 
-    // 2️⃣ Upload avatar if a new file was selected
-    if (avatarFile) {
-      await uploadAvatar(avatarFile);
-      toast.success("Avatar updated successfully!");
-    }
+      // 2️⃣ Upload avatar if a new file was selected
+      if (avatarFile) {
+        await uploadAvatar(avatarFile);
+        toast.success('Avatar updated successfully!');
+      }
 
-    // 3️⃣ Reset edit mode
-    setIsEdit(false);
-  } catch (err) {
-    console.error("Profile save error:", err);
-    toast.error(err.message || "Failed to save profile");
+      // 3️⃣ Reset edit mode
+      setIsEdit(false);
+    } catch (err) {
+      console.error('Profile save error:', err);
+      toast.error(err.message || 'Failed to save profile');
+    }
   }
-}
-
 
   return (
     <main className="flex flex-col items-center justify-center bg-gray-50 text-gray-800 p-6 w-full">
@@ -106,11 +105,11 @@ export default function ProfileForm({ session }) {
           <div className="md:col-span-2 flex flex-col items-center gap-4">
             <Avatar className="w-20 h-20">
               <AvatarImage
-               src={
-                avatarFile
-                  ? URL.createObjectURL(avatarFile) // show preview
-                  : profile?.avatar || <User/>
-              }
+                src={
+                  avatarFile
+                    ? URL.createObjectURL(avatarFile) // show preview
+                    : profile?.avatar || <User />
+                }
                 alt={profile?.username || 'User Avatar'}
                 className="object-cover"
               />
@@ -122,7 +121,7 @@ export default function ProfileForm({ session }) {
             <Input
               type="file"
               accept="image/*"
-              onChange={(e) => setAvatarFile(e.target.files[0])}
+              onChange={e => setAvatarFile(e.target.files[0])}
               className="cursor-pointer"
             />
           </div>
@@ -171,7 +170,7 @@ export default function ProfileForm({ session }) {
               value={formData.dob}
               onChange={handleChange}
               max={today}
-              min={"1900-01-01"}
+              min={'1900-01-01'}
             />
           </div>
 

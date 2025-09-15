@@ -8,7 +8,13 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
 import LoadingBtn from '@/components/LoadingBtn';
 import {
   Select,
@@ -37,7 +43,7 @@ const Register = () => {
     setAdminSecret('');
   };
 
-  const handleRegister = async (e) => {
+  const handleRegister = async e => {
     e.preventDefault();
 
     if (!username || !email || !password || !confirmPassword || !role) {
@@ -60,7 +66,7 @@ const Register = () => {
         { username, email, password, role, adminSecret },
         { withCredentials: true }
       );
-      
+
       if (data.success) {
         toast.success(data.message);
         router.push('/login');
@@ -90,7 +96,7 @@ const Register = () => {
               <Label>Username</Label>
               <Input
                 value={username}
-                onChange={(e) => setUserName(e.target.value)}
+                onChange={e => setUserName(e.target.value)}
                 placeholder="Ex. @example123"
                 type="text"
               />
@@ -100,7 +106,7 @@ const Register = () => {
               <Label>Email</Label>
               <Input
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 placeholder="Ex. user12@example.com"
                 type="email"
               />
@@ -124,7 +130,7 @@ const Register = () => {
                 <Label>Admin Secret Key</Label>
                 <Input
                   value={adminSecret}
-                  onChange={(e) => setAdminSecret(e.target.value)}
+                  onChange={e => setAdminSecret(e.target.value)}
                   placeholder="Enter Admin Secret"
                   type="password"
                 />
@@ -135,7 +141,7 @@ const Register = () => {
               <Label>Password</Label>
               <Input
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 placeholder="Enter Password"
                 type="password"
               />
@@ -145,7 +151,7 @@ const Register = () => {
               <Label>Confirm Password</Label>
               <Input
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={e => setConfirmPassword(e.target.value)}
                 placeholder="Confirm Password"
                 type="password"
               />

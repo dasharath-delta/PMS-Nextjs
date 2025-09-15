@@ -10,10 +10,11 @@ export async function GET() {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { success: false, message: 'Not authenticated' },
-        { status: 401 }
-      );
+      return apiResponse({
+        success: false,
+        message: 'Unauthorized',
+        status: 400,
+      });
     }
 
     // Fetch user from DB

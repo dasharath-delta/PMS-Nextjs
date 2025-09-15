@@ -7,7 +7,12 @@ import { useUserStore } from '@/store/useUserStore';
 import LoadingBtn from './LoadingBtn';
 import NavLink from './NavLink';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
 import { User } from 'lucide-react';
 
 const Navbar = () => {
@@ -19,21 +24,21 @@ const Navbar = () => {
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-secondary bg-white relative transition-all shadow-md">
       {/* Logo */}
-      {
-        role === "admin"
-          ? <Link href={'/dashboard'} className="font-semibold text-2xl text-blue-500">
-            PMS  <span className="text-black border-l-2 ml-1.5 pl-1.5">
-              Admin
-            </span>
-          </Link>
-          : <Link href={'/'} className="font-semibold text-2xl text-blue-500">
-            PMS
-          </Link>
-
-      }
+      {role === 'admin' ? (
+        <Link
+          href={'/dashboard'}
+          className="font-semibold text-2xl text-blue-500"
+        >
+          PMS <span className="text-black border-l-2 ml-1.5 pl-1.5">Admin</span>
+        </Link>
+      ) : (
+        <Link href={'/'} className="font-semibold text-2xl text-blue-500">
+          PMS
+        </Link>
+      )}
       {/* Links */}
       <div className="capitalize font-medium text-gray-800 flex items-center gap-3">
-        {role === "admin" ? (
+        {role === 'admin' ? (
           <>
             <NavLink href={'/dashboard'}>dashboard</NavLink>
             <NavLink href={'/users'}>users</NavLink>
@@ -75,7 +80,7 @@ const Navbar = () => {
                     <Avatar className="w-12 h-12 cursor-pointer">
                       <AvatarImage
                         src={profile?.avatar}
-                        alt={profile?.username || "User Avatar"}
+                        alt={profile?.username || 'User Avatar'}
                         className="object-cover"
                       />
                       <AvatarFallback>
