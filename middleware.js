@@ -14,7 +14,7 @@ export async function middleware(req) {
     '/reset-password',
     '/products', // products are public but restricted for admins
   ];
-  const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
+  const isPublicPath = publicPaths.some(path => pathname.startsWith(path));
 
   // 1 Logged-in user visiting a public page → redirect based on role
   if (isPublicPath && token && !pathname.startsWith('/products')) {
@@ -73,7 +73,7 @@ export const config = {
     '/add-product',
     '/all-products',
     '/products/:path*', //  public but admin-blocked
-    '/contact/:path*',  // user-only
-    '/profile',         //  both admin & user allowed
+    '/contact/:path*', // user-only
+    '/profile', //  both admin & user allowed
   ],
 };

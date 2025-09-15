@@ -1,7 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
@@ -14,12 +20,16 @@ const ProductsPage = () => {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetchProducts().catch((err) => toast.error(err.message || 'Failed to fetch products'));
+    fetchProducts().catch(err =>
+      toast.error(err.message || 'Failed to fetch products')
+    );
   }, [fetchProducts]);
 
-  const handleSearch = (e) => {
+  const handleSearch = e => {
     e.preventDefault();
-    fetchProducts(search).catch((err) => toast.error(err.message || 'Failed to fetch products'));
+    fetchProducts(search).catch(err =>
+      toast.error(err.message || 'Failed to fetch products')
+    );
   };
 
   return (
@@ -29,14 +39,19 @@ const ProductsPage = () => {
       </h1>
 
       {/* Search Bar */}
-      <form onSubmit={handleSearch} className="flex justify-center mb-4 sm:mb-6 gap-2">
+      <form
+        onSubmit={handleSearch}
+        className="flex justify-center mb-4 sm:mb-6 gap-2"
+      >
         <Input
           placeholder="Search products..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={e => setSearch(e.target.value)}
           className="w-48 sm:w-64"
         />
-        <Button type="submit" size="sm">Search</Button>
+        <Button type="submit" size="sm">
+          Search
+        </Button>
       </form>
 
       {/* Products List */}
@@ -45,36 +60,48 @@ const ProductsPage = () => {
       ) : error ? (
         <p className="text-center text-red-500 text-sm sm:text-base">{error}</p>
       ) : products.length === 0 ? (
-        <p className="text-center text-gray-500 text-sm sm:text-base">No products found</p>
+        <p className="text-center text-gray-500 text-sm sm:text-base">
+          No products found
+        </p>
       ) : (
         <ScrollArea className="h-[70vh]">
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {products.map((product) => (
+            {products.map(product => (
               <Card
                 key={product.id}
-                className="shadow-md hover:shadow-lg transition p-2 sm:p-3 flex flex-col justify-between"
+                className="shadow-md hover:shadow-lg transition p-2 flex flex-col justify-between"
               >
-                <CardHeader className="p-0">
-                  <CardTitle className="text-sm sm:text-base font-medium">{product.name}</CardTitle>
-                  <p className="text-xs sm:text-sm text-gray-500">{product.category}</p>
+                <CardHeader className="p-0 mb-1">
+                  <CardTitle className="text-xs sm:text-sm font-medium leading-tight">
+                    {product.name}
+                  </CardTitle>
+                  <p className="text-[10px] sm:text-xs text-gray-500">
+                    {product.category}
+                  </p>
                 </CardHeader>
-                <CardContent className="flex flex-col gap-1 sm:gap-2 p-0">
+                <CardContent className="flex flex-col gap-1 p-0">
                   {product.imageUrl && (
                     <img
                       src={product.imageUrl}
                       alt={product.name}
-                      className="w-full h-28 sm:h-36 object-cover rounded"
+                      className="w-full h-24 sm:h-28 object-cover rounded"
                     />
                   )}
-                  <p className="text-xs sm:text-sm">{product.description}</p>
-                  <div className="flex justify-between items-center mt-1 sm:mt-2">
-                    <p className="text-xs sm:text-sm font-semibold">Stock: {product.stock}</p>
-                    <p className="text-xs sm:text-sm font-semibold">₹{product.price}</p>
+                  <p className="text-[11px] sm:text-xs line-clamp-2">
+                    {product.description}
+                  </p>
+                  <div className="flex justify-between items-center mt-1">
+                    <p className="text-[11px] sm:text-xs font-semibold">
+                      Stock: {product.stock}
+                    </p>
+                    <p className="text-[11px] sm:text-xs font-semibold">
+                      ₹{product.price}
+                    </p>
                   </div>
                 </CardContent>
-                <CardFooter className="p-2 mt-2 sm:mt-3">
-                  <Link href={`/products/${product.id}`}>
-                    <Button size="sm" className="w-full sm:w-auto text-xs sm:text-sm">
+                <CardFooter className="p-1 mt-1">
+                  <Link href={`/products/${product.id}`} className="w-full">
+                    <Button size="sm" className="w-full text-[11px] sm:text-xs">
                       View
                     </Button>
                   </Link>

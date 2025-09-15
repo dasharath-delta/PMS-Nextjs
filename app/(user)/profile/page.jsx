@@ -80,7 +80,10 @@ const Profile = () => {
         <CardHeader className="flex flex-col md:flex-row items-center justify-between gap-4">
           <Avatar className="w-20 h-20">
             {profile?.avatar ? (
-              <AvatarImage src={profile.avatar}  alt={profile?.username || 'User'} />
+              <AvatarImage
+                src={profile.avatar}
+                alt={profile?.username || 'User'}
+              />
             ) : (
               <AvatarFallback>
                 <User />
@@ -104,7 +107,11 @@ const Profile = () => {
                 <p className="text-lg font-medium">
                   {user?.username || 'Not provided'}
                 </p>
-                <Button size="sm" variant="outline" onClick={() => setIsEditingUsername(true)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setIsEditingUsername(true)}
+                >
                   Edit
                 </Button>
               </div>
@@ -119,7 +126,11 @@ const Profile = () => {
                 <Button size="sm" onClick={handleUsernameSave}>
                   Save
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => setIsEditingUsername(false)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setIsEditingUsername(false)}
+                >
                   Cancel
                 </Button>
               </div>
@@ -136,7 +147,12 @@ const Profile = () => {
           <div>
             <p className="text-sm text-gray-500">Password</p>
             <div className="flex items-center gap-2">
-              <Input disabled type="password" value="*********" className="w-40" />
+              <Input
+                disabled
+                type="password"
+                value="*********"
+                className="w-40"
+              />
               <Link
                 href="/updatePassword"
                 className="underline hover:text-gray-500 font-semibold text-sm"
@@ -151,7 +167,9 @@ const Profile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-sm text-gray-500">First Name</p>
-                <p className="text-lg font-medium">{profile.firstname || '—'}</p>
+                <p className="text-lg font-medium">
+                  {profile.firstname || '—'}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Last Name</p>

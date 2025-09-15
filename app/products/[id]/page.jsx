@@ -50,12 +50,20 @@ const SingleProductPage = () => {
         {/* Details */}
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold mb-2">{product.name}</h1>
-            <p className="text-sm sm:text-base text-gray-500 mb-4">{product.category}</p>
+            <h1 className="text-xl sm:text-2xl font-bold mb-2">
+              {product.name}
+            </h1>
+            <p className="text-sm sm:text-base text-gray-500 mb-4">
+              {product.category}
+            </p>
             <p className="text-sm sm:text-base mb-4">{product.description}</p>
             <div className="flex gap-4 mb-4">
-              <p className="text-sm sm:text-base font-semibold">Stock: {product.stock}</p>
-              <p className="text-sm sm:text-base font-semibold text-green-600">₹{product.price}</p>
+              <p className="text-sm sm:text-base font-semibold">
+                Stock: {product.stock}
+              </p>
+              <p className="text-sm sm:text-base font-semibold text-green-600">
+                ₹{product.price}
+              </p>
             </div>
           </div>
 

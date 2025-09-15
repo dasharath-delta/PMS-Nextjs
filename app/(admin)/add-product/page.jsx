@@ -7,7 +7,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const AddProductPage = () => {
   const { addProduct, isLoading } = useProductStore();
@@ -25,7 +31,7 @@ const AddProductPage = () => {
 
   const categories = ['Clothing', 'Electronics', 'Books', 'Furniture', 'Other'];
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value, files } = e.target;
     if (name === 'image') {
       const file = files[0];
@@ -41,10 +47,15 @@ const AddProductPage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
-    if (!formData.name || !formData.category || !formData.price || !formData.stock) {
+    if (
+      !formData.name ||
+      !formData.category ||
+      !formData.price ||
+      !formData.stock
+    ) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -78,7 +89,9 @@ const AddProductPage = () => {
 
         {/* Instructions */}
         <div className="p-4 bg-blue-50 border border-blue-200 rounded text-sm text-gray-700">
-          <p><strong>Instructions:</strong></p>
+          <p>
+            <strong>Instructions:</strong>
+          </p>
           <ul className="list-disc list-inside space-y-1">
             <li>Provide a clear and descriptive product name.</li>
             <li>Select the appropriate category for this product.</li>
@@ -103,14 +116,16 @@ const AddProductPage = () => {
         <Label htmlFor="category">Category *</Label>
         <Select
           value={formData.category}
-          onValueChange={(val) => setFormData({ ...formData, category: val })}
+          onValueChange={val => setFormData({ ...formData, category: val })}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
           <SelectContent>
-            {categories.map((cat) => (
-              <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+            {categories.map(cat => (
+              <SelectItem key={cat} value={cat}>
+                {cat}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>

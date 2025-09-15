@@ -1,51 +1,55 @@
-"use client";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import React from "react";
-import { Button } from "./ui/button";
-import { useUserStore } from "@/store/useUserStore";
-import LoadingBtn from "./LoadingBtn";
-import NavLink from "./NavLink";
-import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+'use client';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import React, { useEffect } from 'react';
+import { Button } from './ui/button';
+import { useUserStore } from '@/store/useUserStore';
+import LoadingBtn from './LoadingBtn';
+import NavLink from './NavLink';
+import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./ui/tooltip";
-import { User, Menu } from "lucide-react";
+} from './ui/tooltip';
+import { User, Menu } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
   SheetHeader,
   SheetTitle,
-} from "./ui/sheet";
+} from './ui/sheet';
 
 const Navbar = () => {
-  const { logoutUser, isLoading, profile } = useUserStore();
+  const { logoutUser, isLoading, profile, fetchProfile } = useUserStore();
   const { data: session, status } = useSession();
 
   const role = session?.user?.role;
 
   // Public + User links
   const userLinks = [
-    { href: "/", label: "home" },
-    { href: "/products", label: "products" },
-    { href: "/contact", label: "contact" },
+    { href: '/', label: 'home' },
+    { href: '/products', label: 'products' },
+    { href: '/contact', label: 'contact' },
   ];
 
   // Admin links
   const adminLinks = [
-    { href: "/dashboard", label: "dashboard" },
-    { href: "/users", label: "users" },
-    { href: "/add-product", label: "add-products" },
-    { href: "/all-products", label: "all-products" },
-    { href: "/reports", label: "reports" },
+    { href: '/dashboard', label: 'dashboard' },
+    { href: '/users', label: 'users' },
+    { href: '/add-product', label: 'add-products' },
+    { href: '/all-products', label: 'all-products' },
+    { href: '/reports', label: 'reports' },
   ];
 
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
   // Prevent hydration mismatch
-  if (status === "loading") {
+  if (status === 'loading') {
     return (
       <nav className="flex items-center justify-between px-6 py-4 border-b bg-white">
         <span className="animate-pulse text-gray-500">Loading...</span>
@@ -56,13 +60,12 @@ const Navbar = () => {
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-secondary bg-white relative transition-all shadow-md">
       {/* Logo */}
-      {role === "admin" ? (
+      {role === 'admin' ? (
         <Link
           href="/dashboard"
           className="font-semibold text-2xl text-blue-500"
         >
-          PMS{" "}
-          <span className="text-black border-l-2 ml-1.5 pl-1.5">Admin</span>
+          PMS <span className="text-black border-l-2 ml-1.5 pl-1.5">Admin</span>
         </Link>
       ) : (
         <Link href="/" className="font-semibold text-2xl text-blue-500">
@@ -72,7 +75,7 @@ const Navbar = () => {
 
       {/* Desktop Links */}
       <div className="hidden md:flex capitalize font-medium text-gray-800 items-center gap-3">
-        {(role === "admin" ? adminLinks : userLinks).map((link) => (
+        {(role === 'admin' ? adminLinks : userLinks).map(link => (
           <NavLink key={link.href} href={link.href}>
             {link.label}
           </NavLink>
@@ -106,7 +109,7 @@ const Navbar = () => {
                     <Avatar className="w-10 h-10 cursor-pointer">
                       <AvatarImage
                         src={profile?.avatar}
-                        alt={profile?.username || "User Avatar"}
+                        alt={profile?.username || 'User Avatar'}
                         className="object-cover"
                       />
                       <AvatarFallback>
@@ -144,12 +147,12 @@ const Navbar = () => {
           <SheetContent side="right" className="w-64 p-2">
             <SheetHeader>
               <SheetTitle>
-                {role === "admin" ? "Admin Panel" : "Menu"}
+                {role === 'admin' ? 'Admin Panel' : 'Menu'}
               </SheetTitle>
             </SheetHeader>
 
             <div className="flex flex-col gap-4 mt-6">
-              {(role === "admin" ? adminLinks : userLinks).map((link) => (
+              {(role === 'admin' ? adminLinks : userLinks).map(link => (
                 <Link
                   key={link.href}
                   href={link.href}
