@@ -29,7 +29,22 @@ const AddProductPage = () => {
 
   const [imagePreview, setImagePreview] = useState(null);
 
-  const categories = ['Clothing', 'Electronics', 'Books', 'Furniture', 'Other'];
+  const categories = [
+    "Fashion & Apparel",
+    "Electronics & Gadgets",
+    "Home & Living",
+    "Beauty & Personal Care",
+    "Health & Wellness",
+    "Groceries & Essentials",
+    "Books & Stationery",
+    "Sports & Outdoors",
+    "Toys & Games",
+    "Automotive",
+    "Jewelry & Luxury",
+    "Pets Supplies",
+    "Other"
+  ];
+
 
   const handleChange = e => {
     const { name, value, files } = e.target;

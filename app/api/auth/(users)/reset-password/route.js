@@ -50,7 +50,7 @@ export async function POST(req) {
     // update user
     await db
       .update(users)
-      .set({ password: hashed })
+      .set({ password: hashed, passwordChangedAt: new Date() })
       .where(eq(users.id, storedToken.userId));
 
     // delete token (one-time use)

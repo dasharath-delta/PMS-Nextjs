@@ -63,7 +63,7 @@ export async function PUT(req) {
 
     const [upatedUserPassword] = await db
       .update(users)
-      .set({ password: newHashedPassword })
+      .set({ password: newHashedPassword, passwordChangedAt: new Date() })
       .where(eq(users.email, session.user.email))
       .returning();
 

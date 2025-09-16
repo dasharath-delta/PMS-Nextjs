@@ -3,7 +3,8 @@ import NextAuth from 'next-auth';
 import bcrypt from 'bcryptjs';
 import { users } from '@/drizzle/schema';
 import { db } from '@/lib/db';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
+import { signOut } from 'next-auth/react';
 
 export const authOptions = {
   providers: [
@@ -40,6 +41,15 @@ export const authOptions = {
           throw new Error('Invalid role selected'); // 👈 prevents fake admin login
         }
 
+        await db
+          .update(users)
+          .set({
+            loginCount: sql`${users.loginCount} + 1`,
+            isOnline: true,
+            lastLogin: new Date(),
+          })
+          .where(eq(users.id, user.id));
+
         return {
           id: user.id,
           email: user.email,
@@ -66,7 +76,16 @@ export const authOptions = {
       return session;
     },
   },
+  events: {
+    async signOut({ token }) {
+      if (!token?.id) return;
 
+      await db.update(users).set({
+        isOnline: false,
+        lastSeen: new Date(),
+      }).where(eq(users.id, token.id));
+    },
+  },
   pages: {
     signIn: '/login',
     error: '/login',
