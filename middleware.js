@@ -12,7 +12,8 @@ export async function middleware(req) {
     '/register',
     '/forgot-password',
     '/reset-password',
-    '/products', // products are public but restricted for admins
+    '/products', // public but restricted for admins
+    '/contact',  // fully public now
   ];
   const isPublicPath = publicPaths.some(path => pathname.startsWith(path));
 
@@ -23,7 +24,7 @@ export async function middleware(req) {
     );
   }
 
-  //  Restrict /products for admins
+  // Restrict /products for admins
   if (pathname.startsWith('/products') && token?.role === 'admin') {
     return NextResponse.redirect(new URL('/dashboard', req.url));
   }
@@ -46,13 +47,6 @@ export async function middleware(req) {
     }
   }
 
-  // 4 User-only routes
-  if (pathname.startsWith('/contact')) {
-    if (token?.role !== 'user') {
-      return NextResponse.redirect(new URL('/dashboard', req.url));
-    }
-  }
-
   // Both user & admin can access /profile
   if (pathname.startsWith('/profile') && !token) {
     return NextResponse.redirect(new URL('/login', req.url));
@@ -72,8 +66,8 @@ export const config = {
     '/reports/:path*',
     '/add-product',
     '/all-products',
-    '/products/:path*', //  public but admin-blocked
-    '/contact/:path*', // user-only
-    '/profile', //  both admin & user allowed
+    '/products/:path*', // public but admin-blocked
+    '/contact/:path*',  // fully public
+    '/profile', // requires login (both admin & user allowed)
   ],
 };

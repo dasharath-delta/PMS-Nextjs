@@ -8,7 +8,7 @@ import {
   timestamp,
   integer as int,
 } from 'drizzle-orm/pg-core';
-import { users } from './user'; // 👈 import users table
+import { users } from './user'; 
 import { relations } from 'drizzle-orm';
 
 export const products = pgTable('products', {
@@ -21,7 +21,7 @@ export const products = pgTable('products', {
   imageUrl: varchar('image_url', { length: 255 }),
   createdBy: int('created_by')
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }), // 👈 link to users table
+    .references(() => users.id, { onDelete: 'cascade' }), 
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at')
     .defaultNow()

@@ -69,7 +69,7 @@ const AddProductPage = () => {
       !formData.name ||
       !formData.category ||
       !formData.price ||
-      !formData.stock
+      !formData.stock 
     ) {
       toast.error('Please fill in all required fields');
       return;
@@ -156,7 +156,7 @@ const AddProductPage = () => {
         />
 
         {/* Price */}
-        <Label htmlFor="price">Price ($) *</Label>
+        <Label htmlFor="price">Price (₹) *</Label>
         <Input
           type="number"
           id="price"

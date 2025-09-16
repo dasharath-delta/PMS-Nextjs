@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import { users } from '@/drizzle/schema';
 import { db } from '@/lib/db';
 import { eq, sql } from 'drizzle-orm';
-import { signOut } from 'next-auth/react';
+
 
 export const authOptions = {
   providers: [
