@@ -4,6 +4,7 @@ import { resetTokens } from '@/drizzle/schema';
 import { eq, and, gt } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { apiResponse } from '@/util/response';
+import { validatePassword } from '@/validator/user.validator';
 
 export async function POST(req) {
   try {
@@ -15,6 +16,16 @@ export async function POST(req) {
         message: 'Missing fields',
         status: 400,
       });
+    }
+
+    let check = validatePassword(newPassword);
+
+    if (!check.valid) {
+      return apiResponse({
+        success: false,
+        message: check.message,
+        status: 400
+      })
     }
 
     // check token

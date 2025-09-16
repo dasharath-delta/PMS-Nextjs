@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { users } from '@/drizzle/schema';
 import bcrypt from 'bcryptjs';
+import { validatePassword, validateEmail } from '@/validator/user.validator';
 
 export async function POST(req) {
   try {
@@ -16,6 +17,25 @@ export async function POST(req) {
       });
     }
 
+    let check = validateEmail(email);
+    
+    if (!check.valid) {
+      return apiResponse({
+        success: false,
+        message: check.message,
+        status: 400,
+      });
+    }
+
+    check = validatePassword(password);
+
+    if (!check.valid) {
+      return apiResponse({
+        success: false,
+        message: check.message,
+        status: 400,
+      });
+    }
     // check if user already exists
     const existingUser = await db
       .select()

@@ -36,7 +36,7 @@ const UpdatePassword = () => {
       router.back();
     } catch (err) {
       console.error('Profile save error:', err);
-      toast.error(error);
+      toast.error(err?.response?.data?.message);
     }
   };
 
