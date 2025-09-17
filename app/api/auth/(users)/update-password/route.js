@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import { authOptions } from '../../[...nextauth]/route';
 import { getServerSession } from 'next-auth';
 import bcrypt from 'bcryptjs';
+import { validatePassword } from '@/validator/user.validator';
 
 export async function PUT(req) {
   try {
@@ -27,6 +28,15 @@ export async function PUT(req) {
       });
     }
 
+    let check = validatePassword(newPassword);
+    if (!check.valid) {
+      return apiResponse({
+        success: false,
+        message: check.message,
+        status: 400
+      })
+    }
+
     const [user] = await db
       .select()
       .from(users)
@@ -41,7 +51,6 @@ export async function PUT(req) {
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user?.password);
-    console.log(isPasswordCorrect);
 
     if (!isPasswordCorrect) {
       return apiResponse({
@@ -54,7 +63,7 @@ export async function PUT(req) {
 
     const [upatedUserPassword] = await db
       .update(users)
-      .set({ password: newHashedPassword })
+      .set({ password: newHashedPassword, passwordChangedAt: new Date() })
       .where(eq(users.email, session.user.email))
       .returning();
 

@@ -29,7 +29,22 @@ const AddProductPage = () => {
 
   const [imagePreview, setImagePreview] = useState(null);
 
-  const categories = ['Clothing', 'Electronics', 'Books', 'Furniture', 'Other'];
+  const categories = [
+    "Fashion & Apparel",
+    "Electronics & Gadgets",
+    "Home & Living",
+    "Beauty & Personal Care",
+    "Health & Wellness",
+    "Groceries & Essentials",
+    "Books & Stationery",
+    "Sports & Outdoors",
+    "Toys & Games",
+    "Automotive",
+    "Jewelry & Luxury",
+    "Pets Supplies",
+    "Other"
+  ];
+
 
   const handleChange = e => {
     const { name, value, files } = e.target;
@@ -54,7 +69,7 @@ const AddProductPage = () => {
       !formData.name ||
       !formData.category ||
       !formData.price ||
-      !formData.stock
+      !formData.stock 
     ) {
       toast.error('Please fill in all required fields');
       return;
@@ -141,7 +156,7 @@ const AddProductPage = () => {
         />
 
         {/* Price */}
-        <Label htmlFor="price">Price ($) *</Label>
+        <Label htmlFor="price">Price (₹) *</Label>
         <Input
           type="number"
           id="price"

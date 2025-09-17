@@ -45,7 +45,9 @@ const Navbar = () => {
   ];
 
   useEffect(() => {
-    fetchProfile();
+    if (session?.user?.id) {
+      fetchProfile();
+    }
   }, []);
 
   // Prevent hydration mismatch

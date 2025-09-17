@@ -19,7 +19,21 @@ const ProductsPage = () => {
     useProductStore();
   const [editingId, setEditingId] = useState(null);
   const [editedProduct, setEditedProduct] = useState({});
-  const categories = ['Clothing', 'Electronics', 'Books', 'Furniture', 'Other'];
+  const categories = [
+    "Fashion & Apparel",
+    "Electronics & Gadgets",
+    "Home & Living",
+    "Beauty & Personal Care",
+    "Health & Wellness",
+    "Groceries & Essentials",
+    "Books & Stationery",
+    "Sports & Outdoors",
+    "Toys & Games",
+    "Automotive",
+    "Jewelry & Luxury",
+    "Pets Supplies",
+    "Other"
+  ];
 
   useEffect(() => {
     fetchProducts().catch(err =>

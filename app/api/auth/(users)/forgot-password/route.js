@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import crypto from 'crypto';
 import { sendMail } from '@/lib/mailer';
 import { resetTokens } from '@/drizzle/schema/resetToken';
+import { validateEmail } from '@/validator/user.validator';
 
 export async function POST(req) {
   try {
@@ -17,6 +18,15 @@ export async function POST(req) {
         message: 'Email is required',
         status: 400,
       });
+    }
+
+    let check = validateEmail(email);
+    if (!check.valid) {
+      return apiResponse({
+        success: false,
+        message: check.message,
+        status: 400
+      })
     }
 
     const [user] = await db.select().from(users).where(eq(users.email, email));
@@ -49,7 +59,7 @@ export async function POST(req) {
       to: email,
       subject: 'Password Reset Request',
       html: `<h2>Password Reset Request</h2>
-             <p>Hello ${user.name || 'User'},</p>
+             <p>Hello ${user.username || 'User'},</p>
              <p>Click below to reset your password (valid 15 minutes):</p>
              <a href="${resetUrl}">${resetUrl}</a>`,
     });
