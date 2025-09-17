@@ -1,6 +1,6 @@
 # PMS‑Nextjs (Product Management System)
 
-A product & user management application built with **Next.js**, **NextAuth**, **Zustand**, **Drizzle ORM**, and **PostgreSQL**.  
+A Product & user management application built with **Next.js**, **NextAuth**, **Zustand**, **Drizzle ORM**, and **PostgreSQL**.  
 Supports user roles (admin & user), product CRUD, profile management, and secure routing.
 
 ---
